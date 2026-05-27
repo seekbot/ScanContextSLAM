@@ -28,7 +28,7 @@ add_definitions(${PCL_DEFINITIONS})
 
 # Headers
 include_directories(
-    ${EIGEN3_INCLUDE_DIR}
+    ${EIGEN3_INCLUDE_DIRS}
     ${PCL_INCLUDE_DIRS}
     ${GTEST_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -184,6 +184,41 @@ target_link_libraries(loop_closure_test
 )
 
 # -------------------------
+# Module 4 GTSAM
+# -------------------------
+add_executable(fast_lio_sam_sc_qn_node 
+    src/fast_lio_sam_sc_qn.cpp
+    src/main.cpp
+)
+
+target_include_directories(fast_lio_sam_sc_qn_node PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nano_gicp/include
+    ${PCL_INCLUDE_DIRS}
+)
+
+ament_target_dependencies(fast_lio_sam_sc_qn_node
+    rclcpp
+    nav_msgs
+    sensor_msgs
+    geometry_msgs
+    message_filters
+    tf2
+    tf2_eigen
+    tf2_geometry_msgs
+    pcl_conversions
+)
+
+target_link_libraries(fast_lio_sam_sc_qn_node
+    loop_closure_node
+    scancontext
+    thirdparty_nano_gicp
+    Eigen3::Eigen
+    ${PCL_LIBRARIES}
+    gtsam
+)
+
+# -------------------------
 # ROS2 Runtime
 # -------------------------
 install(TARGETS
@@ -191,6 +226,7 @@ install(TARGETS
   thirdparty_nanoflann
   thirdparty_nano_gicp
   loop_closure_node
+  fast_lio_sam_sc_qn_node
   sc_test
   utilities_test
   loop_closure_test
